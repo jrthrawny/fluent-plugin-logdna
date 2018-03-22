@@ -40,7 +40,7 @@ module Fluent
     def write(chunk)
       body = chunk_to_body(chunk)
       response = send_request(body)
-      raise "Encountered server error. HTTP:#{response.code}:#{response.message}" if response.code >= 400
+      raise "Encountered server error. HTTP:#{response.code}:#{response.body}" if response.code >= 400
       response.flush
     end
 
@@ -76,7 +76,7 @@ module Fluent
       url = "/logs/ingest?hostname=#{@host}&mac=#{@mac}&ip=#{@ip}&now=#{now}"
       @ingester.headers('apikey' => @api_key,
                         'content-type' => 'application/json')
-               .request_post(url, json: body)
+               .post(url, json: body)
     end
   end
 end
