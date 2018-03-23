@@ -38,8 +38,12 @@ module Fluent
     end
 
     def write(chunk)
-      body = chunk_to_body(chunk)
-      response = send_request(body)
+      begin
+        body = chunk_to_body(chunk)
+        response = send_request(body)
+      rescue
+        $log.error "Encountered unknown Error with message: #{body}"
+      end
       raise "Encountered server error. HTTP:#{response.code}:#{response.body}" if response.code >= 400
       response.flush
     end
