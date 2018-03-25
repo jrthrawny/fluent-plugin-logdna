@@ -38,14 +38,10 @@ module Fluent
     end
 
     def write(chunk)
-      begin
-        body = chunk_to_body(chunk)
-        response = send_request(body)
-        raise "Encountered server error. HTTP:#{response.code}:#{response.body}" if response.code >= 400
-        response.flush
-      rescue
-        $log.error "Encountered unknown Error with message: #{body}"
-      end
+      body = chunk_to_body(chunk)
+      response = send_request(body)
+      raise "Encountered server error. HTTP:#{response.code}:#{response.body}" if response.code >= 400
+      response.flush
       
     end
 
@@ -55,10 +51,11 @@ module Fluent
       data = []
 
       chunk.msgpack_each do |(tag, time, record)|
-          begin
+        begin
           line = gather_line_data(tag, time, record)
           data << line unless line[:line].empty?
-        rescue
+        rescue Exception => e  
+          $log.error "Encountered unknown Error with event: #{e.message}"
           $log.error "Encountered unknown Error with event: #{record}"
         end
       end
