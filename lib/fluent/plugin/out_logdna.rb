@@ -38,10 +38,10 @@ module Fluent
     end
 
     def write(chunk)
-      body = chunk_to_body(chunk)
-      response = send_request(body)
-      raise "Encountered server error. HTTP:#{response.code}:#{response.body}" if response.code >= 400
-      response.flush
+        body = chunk_to_body(chunk)
+        response = send_request(body)
+        raise "Encountered server error. HTTP:#{response.code}:#{response.body}" if response.code >= 400
+        response.flush
       
     end
 
