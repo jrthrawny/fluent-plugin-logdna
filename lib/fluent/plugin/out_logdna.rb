@@ -68,7 +68,7 @@ module Fluent
         level: record['level'] || record['severity'] || tag.split('.').last,
         timestamp: time,
 
-        line: (record['log'] || record['line'] || record['message'] || record.to_json).encode('UTF-8', :undef => :replace, :invalid => :replace, :replace => '')
+        line: (record.to_json).encode('UTF-8', :undef => :replace, :invalid => :replace, :replace => '')
         
       }
       line[:app] = record['_app'] || record['app']
